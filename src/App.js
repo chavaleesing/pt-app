@@ -1,45 +1,28 @@
 import React, { useState } from 'react';
 import './App.css';
-
-function MonthInputs({ month, onChange }) {
-  const months = [
-    { value: 1, name: 'January' },
-    { value: 2, name: 'February' },
-    { value: 3, name: 'March' },
-    { value: 4, name: 'April' },
-    { value: 5, name: 'May' },
-    { value: 6, name: 'June' },
-    { value: 7, name: 'July' },
-    { value: 8, name: 'August' },
-    { value: 9, name: 'September' },
-    { value: 10, name: 'October' },
-    { value: 11, name: 'November' },
-    { value: 12, name: 'December' },
-  ];
-
-  return (
-    <select value={month} onChange={onChange} className="month-select">
-      {months.map((m) => (
-        <option key={m.value} value={m.value}>{m.name}</option>
-      ))}
-    </select>
-  );
-}
+import MonthInputs from './MonthInputs';
 
 function App() {
+  const currentYear = new Date().getFullYear();
   const [selectedMonth, setSelectedMonth] = useState(1); // Default to January (value: 1)
+  const [selectedYear, setSelectedYear] = useState(currentYear); // Default to current year
   const [inputValues, setInputValues] = useState(Array(31).fill('')); // Default to 31 empty strings
   const [totalAmount, setTotalAmount] = useState('');
 
   const handleMonthChange = (e) => {
     setSelectedMonth(parseInt(e.target.value, 10)); // Parse selected month to integer
-    setInputValues(Array(getDaysInMonth(parseInt(e.target.value, 10))).fill('')); // Reset input values based on selected month
+    setInputValues(Array(getDaysInMonth(parseInt(e.target.value, 10), selectedYear)).fill('')); // Reset input values based on selected month and year
   };
 
-  const getDaysInMonth = (month) => {
+  const handleYearChange = (e) => {
+    setSelectedYear(parseInt(e.target.value, 10)); // Parse selected year to integer
+    setInputValues(Array(getDaysInMonth(selectedMonth, parseInt(e.target.value, 10))).fill('')); // Reset input values based on selected month and year
+  };
+
+  const getDaysInMonth = (month, year) => {
     switch (month) {
       case 2:
-        return 29; // Set max date for February
+        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 29 : 28; // Leap year calculation for February
       case 4:
       case 6:
       case 9:
@@ -69,7 +52,7 @@ function App() {
   };
 
   // Generate input boxes based on numDays
-  const numDays = getDaysInMonth(selectedMonth);
+  const numDays = getDaysInMonth(selectedMonth, selectedYear);
   const inputs = [];
   for (let i = 0; i < numDays; i++) {
     inputs.push(
@@ -86,8 +69,13 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Dynamic Input Boxes Based on Month</h1>
-      <MonthInputs month={selectedMonth} onChange={handleMonthChange} />
+      <h1>Dynamic Input Boxes Based on Month and Year</h1>
+      <MonthInputs
+        month={selectedMonth}
+        year={selectedYear}
+        onChangeMonth={handleMonthChange}
+        onChangeYear={handleYearChange}
+      />
       <div className="total-amount">
         <label>Total Amount:</label>
         <input
