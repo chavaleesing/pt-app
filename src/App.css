@@ -1,38 +1,46 @@
 .App {
+  font-family: Arial, sans-serif;
   text-align: center;
+  margin: 50px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.month-select {
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.inputs-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* Align input boxes to the left */
+  gap: 10px;
 }
 
-.App-link {
-  color: #61dafb;
+.left-aligned-input {
+  padding: 12px; /* Increased padding */
+  margin: 6px;
+  width: 110px; /* Increased width */
+  font-size: 16px; /* Increased font size */
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.total-amount input {
+  padding: 12px; /* Increased padding */
+  margin: 6px;
+  width: 180px; /* Increased width */
+  font-size: 16px; /* Increased font size */
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.total-amount {
+  margin-bottom: 20px;
+}
+
+.total-amount label {
+  margin-right: 10px;
 }
