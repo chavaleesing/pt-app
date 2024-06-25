@@ -4,6 +4,7 @@ import MonthInputs from './MonthInputs';
 import ErrorModal from './ErrorModal';
 import { TextField, Button, Typography, Container } from '@mui/material';
 import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 function App() {
   const currentYear = new Date().getFullYear();
@@ -13,15 +14,25 @@ function App() {
   const [totalAmount, setTotalAmount] = useState('');
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [formattedDate, setFormattedDate] = useState('');
 
   const handleMonthChange = (e) => {
-    setSelectedMonth(parseInt(e.target.value, 10));
-    setInputValues(Array(getDaysInMonth(parseInt(e.target.value, 10), selectedYear)).fill(''));
+    const month = parseInt(e.target.value, 10);
+    setSelectedMonth(month);
+    setInputValues(Array(getDaysInMonth(month, selectedYear)).fill(''));
+    updateFormattedDate(month, selectedYear);
   };
 
   const handleYearChange = (e) => {
-    setSelectedYear(parseInt(e.target.value, 10));
-    setInputValues(Array(getDaysInMonth(selectedMonth, parseInt(e.target.value, 10))).fill(''));
+    const year = parseInt(e.target.value, 10);
+    setSelectedYear(year);
+    setInputValues(Array(getDaysInMonth(selectedMonth, year)).fill(''));
+    updateFormattedDate(selectedMonth, year);
+  };
+
+  const updateFormattedDate = (month, year) => {
+    const formatted = `${year}-${String(month).padStart(2, '0')}-01`;
+    setFormattedDate(formatted);
   };
 
   const getDaysInMonth = (month, year) => {
@@ -61,10 +72,8 @@ function App() {
       return;
     }
 
-    const formattedDate = `${selectedYear}-${String(selectedMonth).padStart(2, '0')}-01`;
-
     try {
-      const response = await axios.post('http://localhost:8080/sale-report', {
+      const response = await axios.post('https://pt-api-jrep.onrender.com/sale-report', {
         date: formattedDate,
         month: selectedMonth,
         year: selectedYear,
@@ -73,6 +82,9 @@ function App() {
       });
 
       console.log('Data sent successfully:', response.data);
+
+      // Download file after successful API call
+      downloadExcelFile(response.data);
 
       // Reset form or perform other actions as needed
       setInputValues(Array(getDaysInMonth(selectedMonth, selectedYear)).fill(''));
@@ -85,6 +97,36 @@ function App() {
       setErrorMessage('Server Error. Please try again later.'); // Set error message
       setShowErrorModal(true); // Show error modal
     }
+  };
+
+  const downloadExcelFile = (data) => {
+    // Prepare data as an array of objects for xlsx library
+    const dataArray = [
+      { Date: formattedDate, Month: selectedMonth, Year: selectedYear, InputValues: inputValues, TotalAmount: totalAmount }
+    ];
+
+    // Create a new workbook
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(dataArray);
+
+    // Add the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+    // Generate a binary string from the workbook
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    // Convert to Blob and create URL for download
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary anchor element for download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sale_report.xlsx'; // Set your desired file name here
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const numDays = getDaysInMonth(selectedMonth, selectedYear);
