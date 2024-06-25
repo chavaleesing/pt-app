@@ -1,8 +1,11 @@
+/* App.css */
+
 .App {
   font-family: Arial, sans-serif;
   text-align: center;
-  margin: 50px;
+  margin: 20px;
 }
+
 .year-select,
 .month-select {
   padding: 10px;
@@ -16,22 +19,13 @@
   flex-wrap: wrap;
   justify-content: flex-start; /* Align input boxes to the left */
   gap: 10px;
+  padding: 20px;
 }
 
 .left-aligned-input {
-  padding: 12px; /* Increased padding */
-  margin: 6px;
-  width: 110px; /* Increased width */
-  font-size: 16px; /* Increased font size */
-  text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.total-amount input {
-  padding: 12px; /* Increased padding */
-  margin: 6px;
-  width: 180px; /* Increased width */
+  padding: 10px; /* Increased padding */
+  margin: 10px;
+  width: 100px; /* Increased width */
   font-size: 16px; /* Increased font size */
   text-align: center;
   border: 1px solid #ccc;
@@ -39,9 +33,39 @@
 }
 
 .total-amount {
-  margin-bottom: 20px;
+  margin-bottom: 30px; /* Increased margin-bottom for more space */
 }
 
 .total-amount label {
   margin-right: 10px;
+}
+
+.total-amount input {
+  padding: 18px; /* Increased padding */
+  margin-top: 6px;
+  width: 100px; /* Increased width */
+  font-size: 16px; /* Increased font size */
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 15px 30px; /* Increased padding */
+  font-size: 18px; /* Increased font size */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.submit-btn:hover {
+  background-color: #92c1f4;
+}
+
+/* Styling for Error Modal */
+.modal-content {
+  text-align: center;
 }
