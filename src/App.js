@@ -78,8 +78,8 @@ function App() {
     });
 
     // Reset form or perform other actions as needed
-    setInputValues(Array(getDaysInMonth(selectedMonth, selectedYear)).fill(''));
-    setTotalAmount('');
+    // setInputValues(Array(getDaysInMonth(selectedMonth, selectedYear)).fill(''));
+    // setTotalAmount('');
     setShowErrorModal(false); // Close error modal
   };
 
@@ -118,7 +118,7 @@ function App() {
           value={totalAmount}
           onChange={handleTotalAmountChange}
           placeholder="Enter total amount"
-          style={{ maxWidth: '1500px', align: "center" }}
+          style={{ maxWidth: '1500px', align: "center"}}
           className="total-amount-input"
         /></div>
       <div className="inputs-container" style={{ margin: '15px' }}>
