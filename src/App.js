@@ -4,7 +4,6 @@ import MonthInputs from './MonthInputs';
 import ErrorModal from './ErrorModal';
 import { TextField, Button, Typography, Container } from '@mui/material';
 import axios from 'axios';
-import * as XLSX from 'xlsx';
 
 function App() {
   const currentYear = new Date().getFullYear();
@@ -14,7 +13,7 @@ function App() {
   const [totalAmount, setTotalAmount] = useState('');
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [formattedDate, setFormattedDate] = useState('');
+  const [formattedDate, setFormattedDate] = useState('2024-01-01');
 
   const handleMonthChange = (e) => {
     const month = parseInt(e.target.value, 10);
@@ -66,59 +65,68 @@ function App() {
   };
 
   const handleSubmit = async () => {
-    if (!selectedMonth || !selectedYear || inputValues.some(value => value === '') || totalAmount === '') {
-      setErrorMessage('Please input all data.');
-      setShowErrorModal(true);
-      return;
-    }
-
     try {
-      const response = await axios.post('https://pt-api-jrep.onrender.com/sale-report', {
+      // Validate inputs
+      if (!selectedMonth || !selectedYear || inputValues.some(value => value === '') || totalAmount === '') {
+        setErrorMessage('Please input all data.');
+        setShowErrorModal(true);
+        return;
+      }
+  
+      // Prepare data for API request
+      const requestData = {
         date: formattedDate,
         month: selectedMonth,
         year: selectedYear,
-        slip_count: inputValues.map(value => parseInt(value, 10)),
+        slip_count: inputValues.map(value => parseInt(value, 10)), // Ensure slip_count is an array of integers
         total_amount: parseInt(totalAmount) || 0,
-      });
+      };
+  
+      // Send POST request to API
+      const response = await axios.post('https://pt-api-jrep.onrender.com/sale-report', requestData, {
+        responseType: 'blob', // Ensure response type is arraybuffer to handle binary data
+      }).then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${Date.now()}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+    });;
 
-      console.log('Data sent successfully:', response.data);
 
+  
+      // console.log('Data sent successfully:', response.data);
+  
       // Download file after successful API call
-      downloadExcelFile(response.data);
-
+      // downloadExcelFile(response.data);
+  
       // Reset form or perform other actions as needed
       setInputValues(Array(getDaysInMonth(selectedMonth, selectedYear)).fill(''));
       setTotalAmount('');
       setShowErrorModal(false); // Close error modal
-
+  
     } catch (error) {
       console.error('Error sending data:', error);
-
-      setErrorMessage('Server Error. Please try again later.'); // Set error message
+  
+      let errorMessage = 'Server Error. Please try again later.';
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message; // Use specific error message from API if available
+      }
+  
+      setErrorMessage(errorMessage); // Set error message
       setShowErrorModal(true); // Show error modal
     }
   };
+  
 
   const downloadExcelFile = (data) => {
-    // Prepare data as an array of objects for xlsx library
-    const dataArray = [
-      { Date: formattedDate, Month: selectedMonth, Year: selectedYear, InputValues: inputValues, TotalAmount: totalAmount }
-    ];
-
-    // Create a new workbook
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(dataArray);
-
-    // Add the worksheet to the workbook
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-
-    // Generate a binary string from the workbook
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-
-    // Convert to Blob and create URL for download
-    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    // Create a Blob from the API response data
+    const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+    // Create a URL for the Blob
     const url = URL.createObjectURL(blob);
-
+  
     // Create a temporary anchor element for download
     const a = document.createElement('a');
     a.href = url;
@@ -126,8 +134,11 @@ function App() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  
+    // Clean up: revoke the URL to release the Blob
     URL.revokeObjectURL(url);
   };
+  
 
   const numDays = getDaysInMonth(selectedMonth, selectedYear);
   const inputs = [];
