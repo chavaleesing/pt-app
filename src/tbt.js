@@ -25,12 +25,10 @@ function Tbt() {
     // Construct the first_date in 'YYYY-MM-DD' format
     try {
     const firstDate = `${selectedYear}-${selectedMonth.padStart(2, '0')}-01`;
-    
-    // Prepare the data to send
-    const requestData = {
-      tax_sale: parseInt(taxSale, 10) || 0, // Convert to integer or default to 0
-      untax_sale: parseInt(untaxSale, 10) || 0, // Convert to integer or default to 0
-      date: firstDate, // Add the first_date to the submitted data
+    var requestData = {
+        tax_sale: taxSale,
+        untax_sale: untaxSale,
+        date: firstDate,
     };
 
     // Send data to the API
