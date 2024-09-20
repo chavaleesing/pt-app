@@ -49,12 +49,7 @@ function Sompong() {
     }
   };
 
-  const handleTotalAmountChange = (e) => {
-    const { value } = e.target;
-    if (/^\d*$/.test(value) || value === '') {
-      setTotalAmount(value);
-    }
-  };
+  const handleTotalAmountChange = (e) => { setTotalAmount(e.target); };
 
   const handleInputChange = (e, index) => {
     const { value } = e.target;
@@ -139,11 +134,11 @@ function Sompong() {
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
         <TextField
-          type="text"
-          label="Total Amount"
+          type="number"
+          label="ยอดรวม"
           value={totalAmount}
           onChange={handleTotalAmountChange}
-          placeholder="Enter total amount"
+          placeholder="ยอดรวม"
           variant="outlined"
         />
       </div>

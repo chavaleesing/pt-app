@@ -43,7 +43,7 @@ function App() {
           onClick={() => goToPage('sompong')} 
           disabled={loading} 
           variant="contained" 
-          color="primary"
+          color="success"
           size="large" 
           sx={{ marginRight: '20px', padding: '10px 30px', fontSize: '20px', borderRadius: '6px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
         >
@@ -53,7 +53,7 @@ function App() {
           onClick={() => goToPage('tbt')}
           disabled={loading} 
           variant="contained" 
-          color="primary"
+          color="success"
           size="large" 
           sx={{ marginRight: '20px', padding: '10px 30px', fontSize: '20px', borderRadius: '6px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
         >
@@ -66,8 +66,8 @@ function App() {
         <Button 
         onClick={() => goToPage()} 
           disabled={loading} 
-          variant="contained" 
-          color="success"
+          variant="outlined" 
+          color="error"
           size="large"
           sx={{ padding: '5px 15px', fontSize: '12px', borderRadius: '5px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
         >
