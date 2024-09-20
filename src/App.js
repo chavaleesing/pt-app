@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
-import Sompong from './sompong'; // Ensure the file name and import match
-import Tbt from './tbt'; // Ensure the file name and import match
-import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading symbol
-import Button from '@mui/material/Button'; // Import Button from Material UI
-import Box from '@mui/material/Box'; // Box for layout control
+import Sompong from './sompong'; 
+import Tbt from './tbt'; 
+import CircularProgress from '@mui/material/CircularProgress'; 
+import Button from '@mui/material/Button'; 
+import Box from '@mui/material/Box'; 
 
 function App() {
   const [loading, setLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState('');
-  const navigate = useNavigate(); // Hook for programmatic navigation
+  const navigate = useNavigate(); 
 
-  // Function to check health before navigating to Sompong page
   const goToPage = async (pageName) => {
     setLoading(true);
     setResponseMessage(''); 

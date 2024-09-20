@@ -107,7 +107,6 @@ function Sompong() {
   const inputs = [];
   for (let i = 0; i < numDays; i++) {
     inputs.push(
-      // <DataGrid item xs={2} key={i}>
       <TextField
         key={i}
         type="text"
@@ -118,7 +117,6 @@ function Sompong() {
         style={{ margin: '5px' }} 
         sx={{width: 100}}
       />
-    //  </DataGrid>
     );
   }
 
