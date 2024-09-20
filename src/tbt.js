@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MonthInputs from './MonthInputs';
 import axios from 'axios';
-import { TextField, Button, Typography, Container } from '@mui/material';
+import { TextField, Button, Typography, Container, CircularProgress } from '@mui/material';
 
 function Tbt() {
   const currentYear = new Date().getFullYear();
@@ -9,6 +9,7 @@ function Tbt() {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [taxSale, setTaxSale] = useState('');
   const [untaxSale, setUntaxSale] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleMonthChange = (e) => {
     setSelectedMonth(e.target.value);
@@ -22,35 +23,37 @@ function Tbt() {
   const handleUntaxSaleChange = (e) => {setUntaxSale(e.target.value);};
 
   const handleSubmit = async () => {
-    // Construct the first_date in 'YYYY-MM-DD' format
+    setLoading(true); // Set loading to true when the API call starts
     try {
-    const firstDate = `${selectedYear}-${selectedMonth.padStart(2, '0')}-01`;
-    var requestData = {
+      const firstDate = `${selectedYear}-${selectedMonth.padStart(2, '0')}-01`;
+      const requestData = {
         tax_sale: taxSale,
         untax_sale: untaxSale,
         date: firstDate,
-    };
+      };
 
-    // Send data to the API
-    const response = await axios.post('https://pt-api-jrep.onrender.com/purchase-report', requestData, {
+      // Send data to the API
+      const response = await axios.post('https://pt-api-jrep.onrender.com/purchase-report', requestData, {
         responseType: 'blob',
-      }).then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `${Date.now()}.xlsx`);
-        document.body.appendChild(link);
-        link.click();
       });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${Date.now()}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      setLoading(false); // Set loading to false when the API call ends
     }
   };
 
   return (
     <Container maxWidth="md">
-      <Typography variant="h4" style={{ margin: '50px' }} align="center" gutterBottom>
-        Form Submission
+      <Typography variant="h4" style={{ margin: '10px' }} align="center" gutterBottom>
+        เทพบัวทอง
       </Typography>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
         <MonthInputs month={selectedMonth} year={selectedYear} onChangeMonth={handleMonthChange} onChangeYear={handleYearChange} />
@@ -74,8 +77,16 @@ function Tbt() {
           variant="outlined"
         />
       </div>
-      <Button onClick={handleSubmit} variant="contained" color="primary" size="large" fullWidth>
-        Submit
+      <Button
+        onClick={handleSubmit}
+        variant="contained"
+        color="primary"
+        size="large"
+        fullWidth
+        disabled={loading} // Disable the button while loading
+        startIcon={loading ? <CircularProgress size={20} /> : null} // Show spinner when loading
+      >
+        {loading ? 'กำลังประมวลผล...' : 'สร้างรีพอต'}
       </Button>
     </Container>
   );
