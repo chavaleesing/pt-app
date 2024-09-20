@@ -49,7 +49,7 @@ function Sompong() {
     }
   };
 
-  const handleTotalAmountChange = (e) => { setTotalAmount(e.target); };
+  const handleTotalAmountChange = (e) => { setTotalAmount(e.target.value); };
 
   const handleInputChange = (e, index) => {
     const { value } = e.target;
@@ -71,10 +71,8 @@ function Sompong() {
 
       const requestData = {
         date: formattedDate,
-        month: selectedMonth,
-        year: selectedYear,
         slip_count: inputValues.map(value => parseInt(value, 10)),
-        total_amount: parseInt(totalAmount) || 0,
+        total_amount: parseInt(totalAmount),
       };
 
       const response = await axios.post('https://pt-api-jrep.onrender.com/sale-report', requestData, {
@@ -113,7 +111,7 @@ function Sompong() {
       <TextField
         key={i}
         type="text"
-        label={`Day ${i + 1}`}
+        label={`วันที่ ${i + 1}`}
         value={inputValues[i]}
         onChange={(e) => handleInputChange(e, i)}
         variant="outlined"
