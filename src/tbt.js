@@ -28,7 +28,7 @@ function Tbt() {
       const firstDate = `${selectedYear}-${selectedMonth.padStart(2, '0')}-01`;
       const requestData = {
         tax_sale: parseInt(taxSale),
-        untax_sale: parseInt(taxSale),
+        untax_sale: parseInt(untaxSale),
         date: firstDate,
       };
 
